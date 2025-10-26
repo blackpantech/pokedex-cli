@@ -2,6 +2,8 @@ package cli
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
 	"strings"
 
 	"github.com/blackpantech/pokedex-cli/internal/models"
@@ -10,15 +12,21 @@ import (
 	"github.com/charmbracelet/glamour"
 )
 
+func DisplaySprite(url string) error {
+	cmd := exec.Command("chafa", url)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
+
 func DisplayPokedexEntry(pokemon models.Pokemon) {
 	title := getTitle(pokemon)
-	sprite := getSprite(pokemon)
 	types := getTypes(pokemon)
 	stats := getStats(pokemon)
 	abilities := getAbilities(pokemon)
 	moves := getMoves(pokemon)
 	in := strings.Join(
-		[]string{sprite, title, types, stats, abilities, moves},
+		[]string{title, types, stats, abilities, moves},
 		"\n***\n",
 	)
 	out, _ := glamour.Render(in, "auto")
@@ -39,10 +47,6 @@ func getTypes(pokemon models.Pokemon) string {
 		typeSlice = append(typeSlice, utils.CapitalizeFirstLetters(t.Type.Name))
 	}
 	return strings.Join(typeSlice, ", ")
-}
-
-func getSprite(pokemon models.Pokemon) string {
-	return fmt.Sprintf("![Front view sprite](%s)", pokemon.Sprites.FrontDefault)
 }
 
 func getStats(pokemon models.Pokemon) string {

@@ -204,7 +204,11 @@ type Pokemon struct {
 		Slot     int  `json:"slot"`
 	} `json:"abilities"`
 	BaseExperience int `json:"base_experience"`
-	Forms          []struct {
+	Cries          struct {
+		Latest string `json:"latest"`
+		Legacy string `json:"legacy"`
+	} `json:"cries"`
+	Forms []struct {
 		Name string `json:"name"`
 		URL  string `json:"url"`
 	} `json:"forms"`
