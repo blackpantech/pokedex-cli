@@ -12,15 +12,16 @@ import (
 
 func DisplayPokedexEntry(pokemon models.Pokemon) {
 	title := getTitle(pokemon)
+	sprite := getSprite(pokemon)
 	types := getTypes(pokemon)
 	stats := getStats(pokemon)
 	abilities := getAbilities(pokemon)
 	moves := getMoves(pokemon)
 	in := strings.Join(
-		[]string{title, types, stats, abilities, moves},
+		[]string{sprite, title, types, stats, abilities, moves},
 		"\n***\n",
 	)
-	out, _ := glamour.Render(in, "dark")
+	out, _ := glamour.Render(in, "auto")
 	fmt.Print(out)
 }
 
@@ -38,6 +39,10 @@ func getTypes(pokemon models.Pokemon) string {
 		typeSlice = append(typeSlice, utils.CapitalizeFirstLetters(t.Type.Name))
 	}
 	return strings.Join(typeSlice, ", ")
+}
+
+func getSprite(pokemon models.Pokemon) string {
+	return fmt.Sprintf("![Front view sprite](%s)", pokemon.Sprites.FrontDefault)
 }
 
 func getStats(pokemon models.Pokemon) string {
@@ -64,12 +69,37 @@ func getAbilities(pokemon models.Pokemon) string {
 
 func getMoves(pokemon models.Pokemon) string {
 	movesSlice := make([]string, 0)
-	for _, m := range pokemon.Moves {
-		moveLine := fmt.Sprintf(
-			"- %s",
-			utils.CapitalizeFirstLetters(m.Move.Name),
-		)
-		movesSlice = append(movesSlice, moveLine)
+	if len(pokemon.Moves) > 10 {
+		tableHeader := "||||\n|---|---|---|"
+		for i := 0; i < (len(pokemon.Moves)+2)/3; i++ {
+			start := i * 3
+			end := min(start+3, len(pokemon.Moves))
+
+			row := make([]string, 3)
+			for j := range 3 {
+				if start+j < end {
+					row[j] = pokemon.Moves[start+j].Move.Name
+				} else {
+					row[j] = "" // Pad with empty string
+				}
+			}
+			movesLine := fmt.Sprintf(
+				"|- %s | - %s | - %s |",
+				utils.CapitalizeFirstLetters(row[0]),
+				utils.CapitalizeFirstLetters(row[1]),
+				utils.CapitalizeFirstLetters(row[2]),
+			)
+			movesSlice = append(movesSlice, movesLine)
+		}
+		return fmt.Sprintf("## Moves\n%s\n%s", tableHeader, strings.Join(movesSlice, "\n"))
+	} else {
+		for _, m := range pokemon.Moves {
+			moveLine := fmt.Sprintf(
+				"- %s",
+				utils.CapitalizeFirstLetters(m.Move.Name),
+			)
+			movesSlice = append(movesSlice, moveLine)
+		}
+		return fmt.Sprintf("## Moves\n %s", strings.Join(movesSlice, "\n"))
 	}
-	return fmt.Sprintf("## Moves\n %s", strings.Join(movesSlice, "\n"))
 }
