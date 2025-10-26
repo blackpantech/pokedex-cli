@@ -23,12 +23,14 @@ func GetPokemon(pokemonNameOrID string) (*models.Pokemon, error) {
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		log.Fatalf("Error reading response body for this Pokemon: %s\n", err)
+		return nil, err
 	}
 
 	var pokemon models.Pokemon
 	err = json.Unmarshal(body, &pokemon)
 	if err != nil {
 		log.Fatalf("Error unmarshalling response body for this Pokemon: %s\n", err)
+		return nil, err
 	}
 
 	return &pokemon, nil
