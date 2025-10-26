@@ -23,8 +23,8 @@ var rootCmd = &cobra.Command{
 		}
 
 		cli.DisplaySprite(pokemon.Sprites.FrontDefault)
-		cli.DisplayPokedexEntry(*pokemon)
 		cli.PlaySound(pokemon.Cries.Latest)
+		cli.DisplayPokedexEntry(*pokemon)
 	},
 }
 
