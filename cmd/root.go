@@ -21,10 +21,10 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			os.Exit(1)
 		}
-
+		cli.ClearDisplay()
 		cli.DisplaySprite(pokemon.Sprites.FrontDefault)
-		cli.PlaySound(pokemon.Cries.Latest)
 		cli.DisplayPokedexEntry(*pokemon)
+		cli.PlaySound(pokemon.Cries.Latest)
 	},
 }
 

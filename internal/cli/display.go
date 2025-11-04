@@ -12,8 +12,12 @@ import (
 	"github.com/charmbracelet/glamour"
 )
 
+func ClearDisplay() {
+	fmt.Println("\033c\x0c")
+}
+
 func DisplaySprite(url string) error {
-	cmd := exec.Command("chafa", url)
+	cmd := exec.Command("kitty", "+kitten", "icat", "--place=30x30@30x0", "--scale-up", url)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
